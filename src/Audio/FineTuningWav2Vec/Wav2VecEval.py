@@ -70,7 +70,7 @@ def predict(batch):
 
     input_values = features.input_values.to(device)
     attention_mask = features.attention_mask.to(device)
-
+    
     with torch.no_grad():
         logits = model(input_values, attention_mask=attention_mask).logits
 
@@ -90,7 +90,7 @@ def save_embs(results, path_embs):
 
     """
     df_posteriors = pd.DataFrame([])
-    df_posteriors[["embs"+str(i) for i in range(8)]] = results["posteriors"]
+    df_posteriors[["embs"+str(i) for i in range(5)]] = results["posteriors"]
     df_posteriors["name"] = result["name"]
     df_posteriors["emotion"] = result["emotion"]
     df_posteriors["actor"] = result["actor"]
@@ -116,11 +116,11 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     #Change if you change the model to choose top weigths
-    checkpoints_per_fold = {0: "checkpoint-1300",
-                            1: "checkpoint-690",
-                            2: "checkpoint-1060",
-                            3: "checkpoint-1040",
-                            4: "checkpoint-670",
+    checkpoints_per_fold = {0: "checkpoint-680",
+                            1: "checkpoint-510",
+                            2: "checkpoint-510",
+                            3: "checkpoint-595",
+                            4: "checkpoint-595",
                             }
 
     trained_model_name = args.trained_model.split("/")[-1]
@@ -143,6 +143,7 @@ if __name__ == '__main__':
         # Make predictions on the loaded samples
         result = test_dataset.map(predict, batched=True, batch_size=8)
         label2id_dict = {"Neutral": 0, "Calm": 1, "Happy": 2, "Sad": 3, "Angry": 4, "Fear": 5, "Disgust": 6, "Surprise": 7}
+        label2id_dict = {'Angry': 0, 'Fear': 1, 'Happy': 2, 'Neutral': 3, 'Sad': 4}
 
         print("LABELS: ", config.label2id)
         # Get the labels and predictions

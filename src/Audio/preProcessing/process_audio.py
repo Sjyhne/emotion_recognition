@@ -21,12 +21,13 @@ import os
 
 
 def convert_audio216k(in_path_video, out_path_audio):
-    if(os.path.exists(out_path_audio)):
-        os.remove(out_path_audio)
-    exit_code = os.system("ffmpeg -i " + in_path_video + " -ar 16k -ac 1 " + out_path_audio)
+    if "/01" in in_path_video:
+        if(os.path.exists(out_path_audio)):
+            os.remove(out_path_audio)
+        exit_code = os.system("ffmpeg -i " + in_path_video + " -ar 16k -ac 1 " + out_path_audio)
 
-def extract_original_audio(in_path_video, out_path_audio):
-    exit_code = os.system("ffmpeg -i "+in_path_video+" "+out_path_audio)
+#def extract_original_audio(in_path_video, out_path_audio):
+#    exit_code = os.system("ffmpeg -i "+in_path_video+" "+out_path_audio)
 
 
 

@@ -102,22 +102,33 @@ def prepare_RAVDESS_DS(path_audios):
         6: 'Disgust',
         7: 'Surprise'
     }
+    
+    dict_emotions_ravdess = {
+        0: 'Neutral',
+        1: 'Calm',
+        2: 'Happy',
+        3: 'Sad',
+        4: 'Angry',
+        5: 'Fear',
+    }
+    
     data = []
     for path in tqdm(Path(path_audios).glob("**/*.wav")):
         name = str(path).split('/')[-1].split('.')[0]
-        label = dict_emotions_ravdess[int(name.split("-")[2]) - 1]  # Start emotions in 0
-        actor = int(name.split("-")[-1])
+        if (int(name.split("-")[2]) - 1) in dict_emotions_ravdess.keys():
+            label = dict_emotions_ravdess[int(name.split("-")[2]) - 1]  # Start emotions in 0
+            actor = int(name.split("-")[-1])
 
-        try:
-            data.append({
-                "name": name,
-                "path": path,
-                "emotion": label,
-                "actor": actor
-            })
-        except Exception as e:
-            # print(str(path), e)
-            pass
+            try:
+                data.append({
+                    "name": name,
+                    "path": path,
+                    "emotion": label,
+                    "actor": actor
+                })
+            except Exception as e:
+                # print(str(path), e)
+                pass
     df = pd.DataFrame(data)
     return df
 
@@ -133,11 +144,11 @@ def generate_train_test(fold, df, save_path=""):
     :param save_path:[str] Path to save the train.csv and test.csv per fold
     """
     actors_per_fold = {
-        0: [2,5,14,15,16],
-        1: [3, 6, 7, 13, 18],
-        2: [10, 11, 12, 19, 20],
-        3: [8, 17, 21, 23, 24],
-        4: [1, 4, 9, 22],
+        0: [1, 5, 14, 15, 16]
+        #1: [3, 6, 7, 13, 18],
+        #2: [10, 11, 12, 19, 20],
+        #3: [8, 17, 21, 23, 24],
+        #4: [1, 4, 9, 22],
     }
 
     test_df = df.loc[df['actor'].isin(actors_per_fold[fold])]
@@ -320,9 +331,9 @@ if __name__ == '__main__':
             prediction_loss_only=False,
             num_train_epochs=epochs,
             fp16=True,
-            save_steps=10,
-            eval_steps=10,
-            logging_steps=10,
+            save_steps=85,
+            eval_steps=85,
+            logging_steps=40,
             learning_rate=1e-4,
             save_total_limit=5,
             load_best_model_at_end=True,
